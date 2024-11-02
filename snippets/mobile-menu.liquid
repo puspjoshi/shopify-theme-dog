@@ -1,0 +1,146 @@
+<div
+  x-data="{openMenu: false}"
+  x-show="openMenu"
+  @toggle-menu.window="openMenu = !openMenu"
+  @click.outside="openMenu = false"
+  class="relative z-10"
+  aria-labelledby="slide-over-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div
+    class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+    aria-hidden="true"
+  ></div>
+
+  <div class="fixed inset-0 overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="pointer-events-none fixed inset-y-0 left-0 flex max-w-full pr-10">
+        <div
+          class="pointer-events-auto relative w-screen max-w-md"
+          x-show="openMenu"
+          x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
+          x-transition:enter-start="-translate-x-full opacity-0"
+          x-transition:enter-end="translate-x-0 opacity-100"
+          x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700"
+          x-transition:leave-start="translate-x-0"
+          x-transition:leave-end="-translate-x-full opacity-0"
+        >
+          <div class="absolute right-0 top-0 -mr-8 flex pl-2 pt-4 sm:-ml-10 sm:pl-4">
+            <button
+              type="button"
+              @click="openMenu = false"
+              class="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+            >
+              <span class="absolute -inset-2.5"></span>
+              <span class="sr-only">Close panel</span>
+              <svg
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                aria-hidden="true"
+                data-slot="icon"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div
+            class="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl"
+          >
+            <div class="px-4 sm:px-6">
+              {% render 'search-input' %}
+            </div>
+            <div class="relative mt-6 flex-1 px-4 sm:px-6">
+              <ul role="list" class="text-black">
+                {% for link in section.settings.menu.links %}
+                  <li>
+                    {%- if link.links != blank -%}
+                      <noscript>
+                        <a
+                          href="{{ link.url }}"
+                          class="header__menu-item animate-link"
+                          {% if link.current %}
+                            area-current="page"
+                          {% endif %}
+                        >
+                          <span
+                            {%- if link.current %}
+                              class="header__active-menu-item"
+                            {% endif %}
+                          >
+                            {{- link.title | escape -}}
+                          </span>
+                        </a>
+                      </noscript>
+                      <div
+                        x-data="{ openSubMenu: false }"
+                        x-colak
+                        class="{% if has_sub_menu %} has-sub-menu {% endif %}"
+                      >
+                        <div class="flex justify-between items-center" :class="{ 'menu_active':openSubMenu }">
+                          <a
+                            href="{{ link.url }}"
+                            class="w-1/2 py-3 text-base inline-flex items-center"
+                            {% if link.current %}
+                              area-content="page"
+                            {% endif %}
+                          >
+                            {{ link.title | escape }}
+                          </a>
+                          <button
+                            type="button"
+                            @click.prevent="openSubMenu = !openSubMenu"
+                            title="Toggle menu"
+                            class="w-1/2 text-right relative overflow-hidden"
+                          >
+                            {% render 'icon-arrow-right', class: 'h-6 transform rotate-90 ml-auto' %}
+                          </button>
+                        </div>
+
+                        <div class="navigation__submenu bg-white" x-collapse x-show="openSubMenu">
+                          <ul class="broder-l ml-3 pl-2 ">
+                            {% for submenu in linklists[link.handle].links %}
+                              {% if submenu.title != 'megamenu' %}
+                                <li>
+                                  <a href="{{ submenu.url }}" class="w-full py-3 block text-sm animate-link">
+                                    <span class="inline-flex items-center">
+                                      {{ submenu.title }}
+                                    </span>
+                                  </a>
+                                </li>
+                              {% endif %}
+                            {% endfor %}
+                          </ul>
+                        </div>
+                      </div>
+                    {%- else -%}
+                      <a
+                        href="{{ link.url }}"
+                        class="w-full py-3 block text-base animate-link"
+                        {% if link.current %}
+                          area-current="page"
+                        {% endif %}
+                      >
+                        <span
+                          {%- if link.current -%}
+                            class="header__active-menu-item"
+                          {%- endif -%}
+                        >
+                          {{ link.title | escape }}
+                        </span>
+                      </a>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
