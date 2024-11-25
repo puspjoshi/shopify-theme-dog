@@ -32,3 +32,18 @@
         }
     }
 }
+
+.page-width{
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+.shopify-payment-button{
+    button{
+        @apply bg-black text-white rounded-sm
+    }
+}
+
+.button__primary{
+    @apply bg-black text-white my-2 py-3 px-6 rounded-sm flex items-center
+}
