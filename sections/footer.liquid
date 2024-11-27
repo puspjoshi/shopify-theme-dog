@@ -36,7 +36,7 @@
               {%- case block.type -%}
                 {%- when 'social_links' -%}
                   {%- if block.settings.show_icons -%}
-                    {% render 'social_links' %}
+                    {% comment %} {% render 'social_links' %} {% endcomment %}
                   {%- endif -%}
                 {%- when 'text' -%}
                   <div class="footer-block__details-content rte">

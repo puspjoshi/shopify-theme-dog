@@ -3,7 +3,7 @@
     <div class="header__logo mx-auto my-2 md:my-0 md:mr-auto md:ml-0">
       {% if settings.logo != blank %}
         <a href="/" style="max-width: {{ settings.logo_width }};">
-          <img src="{{ settings.logo | image_url: width: settings.logo_width }}" alt="{{ shop.name }}">
+          {{ settings.logo | image_url: width: settings.logo_width | image_tag: alt: shop.name, srcset: null }}
         </a>
       {% else %}
         <a href="/">
@@ -64,6 +64,7 @@
       <button
         type="button"
         title="Cart Button"
+        @click="$dispatch('toggle-cart')"
         class="header__icon text-center"
       >
         {% render 'icon-cart', clas="w-10" %}

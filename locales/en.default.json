@@ -42,7 +42,11 @@
     "cart": {
       "view": "View cart ({{ count }})",
       "view_empty_cart": "View cart",
-      "item_added": "Item added to your cart"
+      "item_added": "Item added to your cart",
+      "continue_shopping": "Continue Shooping",
+      "saving": "Total Saving",
+      "subtotal": "Sub Total",
+      "checkout": "Checkout"
     },
     "share": {
       "close": "Close share",
@@ -56,6 +60,7 @@
       "previous_slide": "Slide left",
       "name": "Slider"
     }
+    
   },
   "newsletter": {
     "label": "Email",
