@@ -2,12 +2,14 @@
   x-data="
     {
       openCartDrawer: false,
+      loading: false,
       updateCart(){
         //fetch cart data
         fetch('/?view=cart')
         .then(response => response.text())
         .then(cartData=>{
           $refs.cart_content.innerHTML = cartData;
+          this.loading=false;
         })
       }
     }
@@ -16,21 +18,21 @@
   @cart-updated.window="updateCart"
   @toggle-cart.window="openCartDrawer = !openCartDrawer"
   @click.outside="openCartDrawer = false"
-  class="relative z-10"
+  class="fixed inset-0 overflow-hidden z-20"
   aria-labelledby="slide-over-title"
   role="dialog"
   aria-modal="true"
 >
   <div
-    class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+    class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
     aria-hidden="true"
   ></div>
 
   <div class="fixed inset-0 overflow-hidden">
     <div class="absolute inset-0 overflow-hidden">
-      <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+      <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
         <div
-          class="pointer-events-auto relative w-screen max-w-md"
+          class="relative w-screen max-w-md"
           x-show="openCartDrawer"
           x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
           x-transition:enter-start="translate-x-full opacity-0"
@@ -60,6 +62,8 @@
               </svg>
             </button>
           </div>
+
+          {% render 'loader' %}
 
           <div
             class="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl"

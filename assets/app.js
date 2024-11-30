@@ -3423,6 +3423,27 @@ __webpack_require__.r(__webpack_exports__);
 
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_0__["default"].start();
+var Sunrise = {
+  updateQuantity: function updateQuantity(line, qty) {
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        quantity: qty,
+        line: line
+      })
+    }).then(function (response) {
+      return response.json();
+    }).then(function (data) {
+      window.dispatchEvent(new Event('cart-updated'));
+    })["catch"](function (error) {
+      console.log('Error:', error);
+    });
+  }
+};
+window.Sunrise = Sunrise;
 
 /***/ }),
 
