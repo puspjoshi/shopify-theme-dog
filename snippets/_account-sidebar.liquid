@@ -1,0 +1,27 @@
+<div class="w-1/4">
+  <ul>
+    <li>
+      <a
+        href="{{ routes.account_logout_url }}"
+        class="flex items-center gap-3 border-b p-5 hover:bg-black hover:text-white"
+      >
+        <span class="svg-wrapper block">
+          {{- 'icon-account.svg' | inline_asset_content -}}
+        </span>
+        {{ 'customer.log_out' | t }}
+      </a>
+    </li>
+    <li class="">
+      <a href="{{ routes.account_addresses_url }}" class="block border-b p-5 hover:bg-black hover:text-white">
+        {{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})
+      </a>
+    </li>
+    <li class="border-b p-5 ">
+      <div>
+        <h2>{{ 'customer.account.details' | t }}</h2>
+
+        {{ customer.default_address | format_address }}
+      </div>
+    </li>
+  </ul>
+</div>
