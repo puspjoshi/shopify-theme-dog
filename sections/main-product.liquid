@@ -220,13 +220,16 @@
                         {
                           qty:1,
                           minus(value){
+                            this.qty = parseInt(this.qty);
                             this.qty == 1 ? this.qty = 1 : this.qty -= value;
                           },
                           plus(value){
+                          this.qty = parseInt(this.qty);
                             this.qty += value;
                           }
                         }
                       "
+                      x-init="$watch('qty', value=> $dispatch('quantity-changed', {quantity: value})) "
                     >
                       <button
                         type="button"

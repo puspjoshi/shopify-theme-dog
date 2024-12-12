@@ -47,3 +47,9 @@
 .button__primary{
     @apply bg-black text-white my-2 py-3 px-6 rounded-sm flex items-center
 }
+.product-form__input{
+    //select lable after checked media input
+    input[type='radio']:checked + label{
+        @apply bg-black text-white;
+    }
+}

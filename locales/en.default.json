@@ -44,6 +44,7 @@
       "view_empty_cart": "View cart",
       "item_added": "Item added to your cart",
       "continue_shopping": "Continue Shooping",
+      "cart_empty_title_html": "Your cart is Empty ",
       "saving": "Total Saving",
       "subtotal": "Sub Total",
       "checkout": "Checkout"

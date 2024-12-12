@@ -32,8 +32,10 @@
             });
 
         }
+
     }
   "
+  @quantity-changed.window="quantity=$event.detail.quantity"
 >
   {%- if product != blank -%}
     {%- liquid
