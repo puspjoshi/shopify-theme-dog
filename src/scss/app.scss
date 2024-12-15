@@ -53,3 +53,13 @@
         @apply bg-black text-white;
     }
 }
+
+.filter-form{
+    .filter-group{
+        &[open]{
+            svg{
+                transform: rotate(180deg);
+            }
+        }
+    }
+}
