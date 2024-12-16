@@ -1,11 +1,38 @@
-<div class="filters mr-8">
+<div
+  class="filters mr-8"
+  x-data="
+    {
+      loading: false
+    }
+  "
+  @filter-updated.window="
+    $nextTick(()=>{
+      const form = new FormData($refs.filter_form);
+      const queryString = new URLSearchParams(form).toString();
+      loading = true;
+      fetch('/collections/{{ collection.handle }}?'+queryString)
+      .then(response => response.text())
+      .then(data => {
+          let html_div = document.createElement('div');
+          html_div.innerHTML = data;
+          let html_dom  = html_div.querySelector('#ProductGridContainer').innerHTML;
+          document.querySelector('#ProductGridContainer').innerHTML = html_dom;
+          history.replaceState(null, null, '?'+queryString)
+      })
+      .catch(error=> console.error('Error:', error))
+      .finally(() => loading = false)
+
+    })
+  "
+>
   <h3 class="font-semibold border-b pb-3 mb-3">Filters</h3>
-  <form class="filter-form divide-y">
+  {% render 'loader' %}
+  <form class="filter-form divide-y" x-ref="filter_form">
     {%- for filter in collection.filters -%}
-      <details class="filter-group py-3">
+      <details class="filter-group py-3" open>
         <summary class="flex items-center justify-between">
           <div>
-            <span>{{ filter.label }}</span>
+            <span class="font-semibold">{{ filter.label }}</span>
 
             {%- if filter.active_values.size > 0 -%}
               <span>({{ filter.active_values.size }})</span>
@@ -15,12 +42,6 @@
         </summary>
 
         <div>
-          <div>
-            <p>{{ filter.active_values.size }} selected</p>
-            {%- if filter.active_values.size > 0 -%}
-              <p><a href="{{ filter.url_to_remove }}">Reset</a></p>
-            {%- endif -%}
-          </div>
           {%- case filter.type -%}
             {%- when 'boolean' -%}
               <ul>
@@ -60,8 +81,8 @@
                 </li>
               </ul>
 
-              <div>
-                <input type="submit" value="Apply">
+              <div class="flex justify-end">
+                <input type="submit" value="Apply" class="border bg-black text-white py-3 px-4">
               </div>
             {%- when 'list' -%}
               <ul>
@@ -70,6 +91,8 @@
                     <label for="Filter-{{ filter.param_name }}-{{ forloop.index }}">
                       <input
                         type="checkbox"
+                        class="mr-2"
+                        @change="$dispatch('filter-updated')"
                         name="{{ filter_value.param_name }}"
                         value="{{ filter_value.value }}"
                         id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
@@ -125,49 +148,53 @@
                 {%- endfor -%}
               </ul>
 
-              <div>
-                <input type="submit" value="Apply">
+              <div class="flex justify-end">
+                <input type="submit" value="Apply" class="border bg-black text-white py-2 px-4">
               </div>
             {%- when 'price_range' -%}
-              <div class="filter-group-display__price-range">
+              <div class="filter-group-display__price-range flex justify-between items-center">
                 <div class="filter-group-display__price-range-from">
-                  <span>{{ cart.currency.symbol }}</span>
-
-                  <input
-                    name="{{ filter.min_value.param_name }}"
-                    id="Filter-{{ filter.min_value.param_name }}"
-                    {% if filter.min_value.value -%}
-                      value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
-                    {%- endif %}
-                    type="number"
-                    placeholder="0"
-                    min="0"
-                    max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                  >
-
                   <label for="Filter-{{ filter.min_value.param_name }}">From</label>
+                  <div>
+                    <span>{{ cart.currency.symbol }}</span>
+
+                    <input
+                      name="{{ filter.min_value.param_name }}"
+                      id="Filter-{{ filter.min_value.param_name }}"
+                      {% if filter.min_value.value -%}
+                        value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                      {%- endif %}
+                      type="number"
+                      placeholder="0"
+                      min="0"
+                      class="border py-2 px-3"
+                      max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                    >
+                  </div>
                 </div>
                 <div class="filter-group-display__price-range-to">
-                  <span>{{ cart.currency.symbol }}</span>
-
-                  <input
-                    name="{{ filter.max_value.param_name }}"
-                    id="Filter-{{ filter.max_value.param_name }}"
-                    {% if filter.max_value.value -%}
-                      value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
-                    {%- endif %}
-                    type="number"
-                    placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                    min="0"
-                    max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
-                  >
-
                   <label for="Filter-{{ filter.max_value.param_name }}">To</label>
+                  <div>
+                    <span>{{ cart.currency.symbol }}</span>
+
+                    <input
+                      name="{{ filter.max_value.param_name }}"
+                      id="Filter-{{ filter.max_value.param_name }}"
+                      {% if filter.max_value.value -%}
+                        value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                      {%- endif %}
+                      type="number"
+                      placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                      min="0"
+                      class="border py-2 px-3"
+                      max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                    >
+                  </div>
                 </div>
               </div>
 
-              <div class="filter-group-display__submit">
-                <input type="submit" value="Apply">
+              <div class="filter-group-display__submit flex justify-end my-3">
+                <input type="submit" value="Apply" class="border bg-black text-white py-2 px-4">
               </div>
           {%- endcase -%}
         </div>

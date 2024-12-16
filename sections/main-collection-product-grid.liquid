@@ -1,7 +1,28 @@
-<div class="section-{{ section.id }}-padding">
+<div class="section-{{ section.id }}-padding" id="ProductGridContainer">
   {% if section.settings.enable_sorting %}
     <div class="flex page-width items-center justify-between">
-      <div class="active-filters flex space-x-3">
+      <div
+        class="active-filters flex space-x-3"
+        x-data="
+          {
+            loading: false,
+            removeFilter(urlRemove){
+              this.loading = true;
+              fetch('/collections/'+urlRemove)
+              .then(response => response.text())
+              .then(data => {
+                  let html_div = document.createElement('div');
+                  html_div.innerHTML = data;
+                  let html_dom  = html_div.querySelector('#ProductGridContainer').innerHTML;
+                  document.querySelector('#ProductGridContainer').innerHTML = html_dom;
+                  history.replaceState(null, null, '+urlRemove)
+              })
+              .catch(error=> console.error('Error:', error))
+              .finally(() => this.loading = false)
+            }
+          }
+        "
+      >
         <a
           href="{{ collection.url }}?sort_by={{ collection.sort_by }}"
           class="py-1 px-4 rounded-full bg-[#767676] text-white"
@@ -11,7 +32,10 @@
         {%- for filter in collection.filters -%}
           {%- if filter.type == 'price_range' -%}
             {%- if filter.min_value.value != null or filter.max_value.value != null -%}
-              <a href="{{ filter.url_to_remove }}" class="flex items-center space-x-3">
+              <a
+                href="{{ filter.url_to_remove }}"
+                class="flex items-center space-x-3"
+              >
                 {%- assign min_value = filter.min_value.value | default: 0 -%}
                 {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
                 {{ min_value | money }} - {{ max_value | money }}
@@ -24,7 +48,7 @@
             {%- for filter_value in filter.active_values -%}
               <a
                 class="py-1 px-4 rounded-full bg-[#d7d7d7] flex items-center space-x-3"
-                href="{{ filter_value.url_to_remove }}"
+                @click="removeFilter('{{ filter_value.url_to_remove }}')"
               >
                 {{ filter.label }}: {{ filter_value.label }}
                 <span>
@@ -89,7 +113,7 @@
         <div class="{% if section.settings.filter_type == 'vertical' %} facets-vertical {% endif %}">
           <div
             class="product-grid-container{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-            id="ProductGridContainer"
+
             {% if settings.animations_reveal_on_scroll %}
               data-cascade
             {% endif %}
