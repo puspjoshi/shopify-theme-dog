@@ -1,6 +1,8 @@
 import Alpine from 'alpinejs';
+import Slider from './Slider.js';
 
 window.Alpine = Alpine;
+Alpine.data('Slider', Slider);
 
 Alpine.start();
 
