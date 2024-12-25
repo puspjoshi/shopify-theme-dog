@@ -1,6 +1,6 @@
 {% for block in section.blocks %}
   <div
-    class="{{ section.settings.text_align }}"
+    class="{{ section.settings.text_align }} bg-gradient-to-r from-cyan-500 to-blue-500 h-14 flex items-center justify-center"
     style="background-color: {{ block.settings.bg_color }}; color: {{ block.settings.text_color }};"
   >
     {{ block.settings.text }}
